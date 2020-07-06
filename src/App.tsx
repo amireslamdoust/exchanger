@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import routes from './routes'
-import Layout from "./components/utilities/Layout";
+import Layout from './components/utilities/Layout'
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Switch>
@@ -23,6 +23,5 @@ function App() {
     </Router>
   );
 }
-
 
 export default App;
