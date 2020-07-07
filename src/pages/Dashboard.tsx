@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PriceInput from '../components/inputs/PriceInput'
 import useForm from 'react-hook-form'
+import { openexchangerates as openexchangeratesAPI } from '../services'
 
 const Dashboard = () => {
   const { register, setValue } = useForm()
+
+  const [x, setX] = useState(false)
+  useEffect(() => {
+    if (x) {
+      return
+    }
+    openexchangeratesAPI.getCurrencies().then((res) => {
+      console.log(res)
+      setX(true)
+    })
+  }, [x])
+
   return (
     <div>
       <p>Hello</p>
@@ -11,7 +24,7 @@ const Dashboard = () => {
         register={register}
         setValue={setValue}
         name="sourcing_price"
-        defaultValue="5022"
+        defaultValue="123,45"
       />
     </div>
   )
