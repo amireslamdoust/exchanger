@@ -42,6 +42,11 @@ jobs:
     - name: npm test
       run: npm test
 
+    - name: Copy Original .env
+      run: cp .env.test.dist .env
+
     - name: npm e2e
       run: npm run teste2e
+
+
 
