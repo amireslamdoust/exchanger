@@ -43,5 +43,5 @@ jobs:
       run: npm test
 
     - name: npm e2e
-      run: teste2e
+      run: npm run teste2e
 
