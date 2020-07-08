@@ -8,6 +8,7 @@ import ConvertIcon from '../components/utilities/ConvertIcon'
 import { openexchangerates as openexchangeratesAPI } from '../services'
 import ConvertView from '../components/stats/ConvertView'
 import Tabs from '../components/tabs/Tabs'
+import ConvertButton from '../components/buttons/ConvertButton'
 
 const Dashboard = () => {
   const { balance, setBalance } = useBalance()
@@ -25,6 +26,7 @@ const Dashboard = () => {
     EUR: 0.89,
     GBP: 0.8,
   })
+
   const [firstCallAPI, setFirstCallAPI] = useState(false)
   const [inputLabel, setInputLabel] = useState({
     slug: 'USD',
@@ -108,6 +110,9 @@ const Dashboard = () => {
               defaultValue={outputPrice}
             />
           </div>
+        </div>
+        <div className="flex flex-wrap items-center justify-center mt-10">
+          <ConvertButton />
         </div>
       </div>
       <Footer />
