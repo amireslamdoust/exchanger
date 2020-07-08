@@ -1,4 +1,4 @@
-import React, { RefObject, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 type PriceProps = {
   defaultValue?: string
@@ -7,17 +7,7 @@ type PriceProps = {
   currency: any
   prefix: string
   disable?: boolean
-  setValue: <Name extends string>(
-    name: Name,
-    value: any,
-    shouldValidate?: boolean | undefined,
-  ) => void | Promise<boolean>
-  register:
-    | string
-    | ((instance: HTMLInputElement | null) => void)
-    | RefObject<HTMLInputElement>
-    | null
-    | undefined
+  setValue: any
 }
 
 const validationInput = (price: string) => {
@@ -43,7 +33,6 @@ const PriceInput = ({
   disable,
   currency,
   setValue,
-  register,
 }: PriceProps) => {
   const [defaultPrice, setDefaultPrice] = useState<string>()
   useEffect(() => {
@@ -52,7 +41,7 @@ const PriceInput = ({
   const onValueChange = (value: string) => {
     const formatValue = formatter(value)
     if (validationInput(formatValue) || value === '') {
-      setValue(name, formatValue, true)
+      setValue(formatValue)
       setDefaultPrice(formatValue)
     }
   }
@@ -61,7 +50,7 @@ const PriceInput = ({
     event.preventDefault()
     if (defaultPrice === formatter('')) {
       setDefaultPrice('')
-      setValue(name, '', true)
+      setValue('')
     }
   }
 
@@ -69,7 +58,7 @@ const PriceInput = ({
     event.preventDefault()
     if (!defaultPrice) {
       const def = formatter('')
-      setValue(name, def, true)
+      setValue(def)
       setDefaultPrice(def)
     }
   }
@@ -89,7 +78,6 @@ const PriceInput = ({
         </div>
         <input
           disabled={disable}
-          ref={register}
           type="text"
           id={`price-input-${name}`}
           aria-label={`price-input-${name}`}
@@ -97,7 +85,9 @@ const PriceInput = ({
           onBlur={handleBlur}
           onClick={handleClick}
           onChange={(event) => onValueChange(event.target.value)}
-          className="shadow appearance-none border rounded py-6 px-16 text-2xl text-gray-700 leading-tight focus:outline-none focus:shadow-outline form-input block w-full  sm:leading-5"
+          className={`shadow appearance-none border rounded py-6 px-16 text-2xl text-gray-700 leading-tight focus:outline-none focus:shadow-outline form-input block w-full sm:leading-5 ${
+            disable ? 'text-green-600' : 'text-red-600'
+          }`}
           placeholder="0.00"
           aria-describedby="price-currency"
         />

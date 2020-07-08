@@ -4,7 +4,6 @@ import { render, fireEvent } from '@testing-library/react'
 import PriceInput from './PriceInput'
 
 describe('BasePriceInput', () => {
-  const registerMock = jest.fn()
   const setValueMock = jest.fn()
 
   const setup = () => {
@@ -14,7 +13,6 @@ describe('BasePriceInput', () => {
         currency={{ sign: '$', text: 'USD' }}
         prefix="+"
         setValue={setValueMock}
-        register={registerMock}
         defaultValue={'50,23'}
         name="test"
       />,
