@@ -125,6 +125,8 @@ const Dashboard = () => {
       USD: USDPRICE,
     }
     setBalance(payload)
+    setInputPrice('')
+    setOutputPrice('')
   }
 
   return (
