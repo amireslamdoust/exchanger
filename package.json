@@ -20,7 +20,8 @@
     "react-hook-form": "^3.23.18",
     "react-hook-form-input": "^1.0.14",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.1"
+    "react-scripts": "^3.4.1",
+    "react-transition-group": "^4.4.1"
   },
   "scripts": {
     "build:style": "postcss src/styles/index.css -o src/styles/main.css",

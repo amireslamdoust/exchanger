@@ -41,5 +41,17 @@ describe('BasePriceInput', () => {
 
     fireEvent.change(inputText, { target: { value: '6,80' } })
     expect(inputText.value).toBe('6,80')
+
+    fireEvent.change(inputText, { target: { value: '123456' } })
+    expect(inputText.value).toBe('123.456')
+
+    fireEvent.change(inputText, { target: { value: '123456789' } })
+    expect(inputText.value).toBe('123.456.789')
+
+    fireEvent.change(inputText, { target: { value: '123456,78' } })
+    expect(inputText.value).toBe('123.456,78')
+
+    fireEvent.change(inputText, { target: { value: '5123456,78' } })
+    expect(inputText.value).toBe('5.123.456,78')
   })
 })

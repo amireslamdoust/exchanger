@@ -2,6 +2,11 @@ import React, { RefObject, useEffect, useState } from 'react'
 
 type PriceProps = {
   defaultValue?: string
+  name: string
+  label: string
+  currency: any
+  prefix: string
+  disable?: boolean
   setValue: <Name extends string>(
     name: Name,
     value: any,
@@ -13,7 +18,6 @@ type PriceProps = {
     | RefObject<HTMLInputElement>
     | null
     | undefined
-  name: string
 }
 
 const validationInput = (price: string) => {
@@ -26,38 +30,24 @@ const formatter = (price: string) => {
   if (!checkPriceValidate) {
     return price
   }
-
-  price = price.toString().replace('.', '')
-
-  const commaSeparator = price.search(',')
-  let remainder = ''
-  if (commaSeparator > -1) {
-    remainder = ','
-    const firstDecimalNumber = price[commaSeparator + 1]
-    const secondDecimalNumber = price[commaSeparator + 2]
-    if (firstDecimalNumber === undefined) {
-      remainder += ''
-    } else if (secondDecimalNumber === undefined) {
-      remainder += `${firstDecimalNumber}`
-    } else {
-      remainder += `${firstDecimalNumber}${secondDecimalNumber}`
-    }
-    price = price.slice(0, commaSeparator)
-  }
-
-  price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-
-  console.log(price)
-  if (remainder) {
-    return `${price}${remainder}`
-  }
+  price = price.replace(/\./g, '')
+  price = price.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
   return price
 }
 
-const PriceInput = ({ defaultValue, setValue, register, name, ...rest }: PriceProps) => {
+const PriceInput = ({
+  defaultValue,
+  label,
+  name,
+  prefix,
+  disable,
+  currency,
+  setValue,
+  register,
+}: PriceProps) => {
   const [defaultPrice, setDefaultPrice] = useState<string>()
   useEffect(() => {
-    setDefaultPrice(formatter(defaultValue || '0'))
+    setDefaultPrice(formatter(defaultValue || ''))
   }, [defaultValue])
   const onValueChange = (value: string) => {
     const formatValue = formatter(value)
@@ -69,7 +59,7 @@ const PriceInput = ({ defaultValue, setValue, register, name, ...rest }: PricePr
 
   const handleClick = (event: any) => {
     event.preventDefault()
-    if (defaultPrice === formatter('0')) {
+    if (defaultPrice === formatter('')) {
       setDefaultPrice('')
       setValue(name, '', true)
     }
@@ -78,27 +68,46 @@ const PriceInput = ({ defaultValue, setValue, register, name, ...rest }: PricePr
   const handleBlur = (event: any) => {
     event.preventDefault()
     if (!defaultPrice) {
-      const def = formatter('0')
+      const def = formatter('')
       setValue(name, def, true)
       setDefaultPrice(def)
     }
   }
 
   return (
-    <>
-      <label htmlFor={`price-input-${name}`}>{name}</label>
-      <input
-        type="text"
-        id={`price-input-${name}`}
-        aria-label={`price-input-${name}`}
-        className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        value={defaultPrice || ''}
-        onBlur={handleBlur}
-        onClick={handleClick}
-        onChange={(event) => onValueChange(event.target.value)}
-        {...rest}
-      />
-    </>
+    <div>
+      <label
+        htmlFor={`price-input-${name}`}
+        className="block text-3xl mb-4 font-medium leading-5 text-gray-700"
+      >
+        {label}
+      </label>
+      <div className="mt-1 text-2xl relative rounded-md shadow-sm">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <span className="text-gray-500 text-2xl sm:leading-5">{currency.sign}</span>
+          <span className="text-gray-500 text-2xl sm:leading-5 pl-2">{prefix}</span>
+        </div>
+        <input
+          disabled={disable}
+          ref={register}
+          type="text"
+          id={`price-input-${name}`}
+          aria-label={`price-input-${name}`}
+          value={defaultPrice || ''}
+          onBlur={handleBlur}
+          onClick={handleClick}
+          onChange={(event) => onValueChange(event.target.value)}
+          className="shadow appearance-none border rounded py-6 px-16 text-2xl text-gray-700 leading-tight focus:outline-none focus:shadow-outline form-input block w-full  sm:leading-5"
+          placeholder="0.00"
+          aria-describedby="price-currency"
+        />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <span className="text-gray-500 text-2xl sm:leading-5" id="price-currency">
+            {currency.text}
+          </span>
+        </div>
+      </div>
+    </div>
   )
 }
 
