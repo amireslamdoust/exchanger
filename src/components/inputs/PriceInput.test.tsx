@@ -10,6 +10,9 @@ describe('BasePriceInput', () => {
   const setup = () => {
     const utils = render(
       <PriceInput
+        label="test"
+        currency={{ sign: '$', text: 'USD' }}
+        prefix="+"
         setValue={setValueMock}
         register={registerMock}
         defaultValue={'50,23'}
