@@ -129,10 +129,15 @@ const Dashboard = () => {
     setOutputPrice('')
   }
 
+  const handleChangeConvert = () => {
+    const tempLabel = outputLabel
+    setOutputLabel(inputLabel)
+    setInputLabel(tempLabel)
+  }
   return (
     <>
       <Header />
-      <div className="container mx-auto ">
+      <div className="container mx-auto my-5 px-4 ">
         <BalanceView balance={balance} />
         <ConvertView convert={convertRate} />
         <div className="flex flex-wrap">
@@ -147,7 +152,7 @@ const Dashboard = () => {
             />
           </div>
           <div className="w-full lg:w-1/4 mt-0 lg:mt-24">
-            <ConvertIcon />
+            <ConvertIcon changeOrdinate={handleChangeConvert} />
           </div>
           <div className="w-full lg:w-3/8">
             <Tabs active={outputLabel} inputActive={inputLabel} setAction={setOutputLabel} />

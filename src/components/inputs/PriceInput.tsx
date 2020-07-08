@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { isString } from 'util'
 
 type PriceProps = {
   defaultValue?: string
@@ -26,11 +27,16 @@ const formatter = (price: string) => {
 
 const PriceInput = ({ defaultValue, name, prefix, disable, currency, setValue }: PriceProps) => {
   const [defaultPrice, setDefaultPrice] = useState<string>()
+
   useEffect(() => {
     setDefaultPrice(formatter(defaultValue || ''))
   }, [defaultValue])
+
   const onValueChange = (value: string) => {
     const formatValue = formatter(value)
+
+    // const x = Object.values(balance)[)]
+
     if (validationInput(formatValue) || value === '') {
       setValue(formatValue)
       setDefaultPrice(formatValue)

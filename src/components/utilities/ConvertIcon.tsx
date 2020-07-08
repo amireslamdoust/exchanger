@@ -1,9 +1,17 @@
 import React from 'react'
 
-const ConvertIcon = () => {
+type ConvertIconProps = {
+  changeOrdinate: any
+}
+
+const ConvertIcon = ({ changeOrdinate }: ConvertIconProps) => {
+  const handleClick = (event: any) => {
+    event.preventDefault()
+    changeOrdinate()
+  }
   return (
-    <div className="flex flex-wrap items-center justify-center mt-12 cursor-pointer ">
-      <div className="w-12 rotate-90 transform lg:rotate-0">
+    <div className="flex flex-wrap items-center justify-center mt-12 cursor-pointer">
+      <div className="w-12 rotate-90 transform lg:rotate-0" onClick={handleClick}>
         <svg
           version="1.1"
           id="Capa_1"
