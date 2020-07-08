@@ -5,7 +5,8 @@ import BalanceView from '../components/stats/BalanceView'
 import useBalance from '../hooks/useBalance'
 import PriceInput from '../components/inputs/PriceInput'
 import ConvertIcon from '../components/utilities/ConvertIcon'
-import { openexchangerates as openexchangeratesAPI } from '../services'
+import { getCurrencies } from '../services/openexchangerates'
+import { convertToFloat, convertToString } from '../services/convertPrice'
 import ConvertView from '../components/stats/ConvertView'
 import Tabs from '../components/tabs/Tabs'
 import ConvertButton from '../components/buttons/ConvertButton'
@@ -58,10 +59,23 @@ const Dashboard = () => {
   //   return () => clearInterval(interval)
   // }, [])
 
+  const [hasDifferentiationError, setHasDifferentiationError] = useState(false)
   useEffect(() => {
-    let price = parseFloat(inputPrice.replace(/\./g, '').replace(',', '.'))
+    setHasDifferentiationError(false)
+    let price = convertToFloat(inputPrice)
     if (isNaN(price)) {
+      setOutputPrice('')
       return
+    }
+
+    const inputBalance = Object.values(balance)[
+      Object.keys(balance).findIndex((c) => c === inputLabel.slug)
+    ]
+
+    const inputDifferentiation = convertToFloat(inputBalance) - convertToFloat(inputPrice)
+
+    if (inputDifferentiation < 0) {
+      setHasDifferentiationError(true)
     }
 
     const inputRate = Object.values(convertRate)[
@@ -73,60 +87,43 @@ const Dashboard = () => {
 
     price = (price * outputRate) / inputRate
     price = Math.round((price + Number.EPSILON) * 100) / 100
-    let convertedPrice = price.toString()
-    convertedPrice = convertedPrice.replace('.', ',')
-    convertedPrice = convertedPrice.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-    setOutputPrice(convertedPrice)
+    setOutputPrice(convertToString(price))
   }, [inputPrice, convertRate, inputLabel, outputLabel])
 
   const handleSubmit = () => {
+    if (isNaN(convertToFloat(inputPrice))) {
+      return
+    }
     const inputBalance = Object.values(balance)[
       Object.keys(balance).findIndex((c) => c === inputLabel.slug)
     ]
     const outputBalance = Object.values(balance)[
       Object.keys(balance).findIndex((c) => c === outputLabel.slug)
     ]
-    const inputPriceNumber = parseFloat(inputPrice.replace(/\./g, '').replace(',', '.'))
-    const outputPriceNumber = parseFloat(outputPrice.replace(/\./g, '').replace(',', '.'))
 
-    let inputBalanceNumber = parseFloat(inputBalance.replace(/\./g, '').replace(',', '.'))
-    let outputBalanceNumber = parseFloat(outputBalance.replace(/\./g, '').replace(',', '.'))
-    const f1 = inputBalanceNumber - inputPriceNumber
-    const f2 = outputBalanceNumber + outputPriceNumber
+    const convertedInput = convertToString(
+      convertToFloat(inputBalance) - convertToFloat(inputPrice),
+    )
+    const convertedOutput = convertToString(
+      convertToFloat(outputBalance) + convertToFloat(outputPrice),
+    )
 
-    let convertedPrice1 = f1.toString()
-    convertedPrice1 = convertedPrice1.replace('.', ',')
-    convertedPrice1 = convertedPrice1.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-
-    let convertedPrice2 = f2.toString()
-    convertedPrice2 = convertedPrice2.replace('.', ',')
-    convertedPrice2 = convertedPrice2.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-    const EURPRICE =
-      inputLabel.slug === 'EUR'
-        ? convertedPrice1
-        : outputLabel.slug === 'EUR'
-        ? convertedPrice2
-        : balance.EUR
-    const GBPPRICE =
-      inputLabel.slug === 'GBP'
-        ? convertedPrice1
-        : outputLabel.slug === 'GBP'
-        ? convertedPrice2
-        : balance.GBP
-    const USDPRICE =
-      inputLabel.slug === 'USD'
-        ? convertedPrice1
-        : outputLabel.slug === 'USD'
-        ? convertedPrice2
-        : balance.USD
     const payload = {
-      EUR: EURPRICE,
-      GBP: GBPPRICE,
-      USD: USDPRICE,
+      EUR: setPricePayload(convertedInput, convertedOutput, 'EUR') || balance.EUR,
+      GBP: setPricePayload(convertedInput, convertedOutput, 'GBP') || balance.GBP,
+      USD: setPricePayload(convertedInput, convertedOutput, 'USD') || balance.USD,
     }
     setBalance(payload)
     setInputPrice('')
     setOutputPrice('')
+  }
+
+  const setPricePayload = (convertedInput: string, convertedOutput: string, slug: string) => {
+    return inputLabel.slug === slug
+      ? convertedInput
+      : outputLabel.slug === slug
+      ? convertedOutput
+      : null
   }
 
   const handleChangeConvert = () => {
@@ -146,6 +143,7 @@ const Dashboard = () => {
             <PriceInput
               name="input_price"
               prefix="-"
+              error={hasDifferentiationError}
               currency={inputLabel}
               setValue={setInputPrice}
               defaultValue={inputPrice}
@@ -167,7 +165,7 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-center mt-10">
-          <ConvertButton onSubmit={handleSubmit} />
+          <ConvertButton onSubmit={handleSubmit} disable={hasDifferentiationError} />
         </div>
       </div>
       <Footer />

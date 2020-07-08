@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { isString } from 'util'
 
 type PriceProps = {
   defaultValue?: string
@@ -8,6 +7,7 @@ type PriceProps = {
   prefix: string
   disable?: boolean
   setValue: any
+  error?: boolean
 }
 
 const validationInput = (price: string) => {
@@ -25,7 +25,15 @@ const formatter = (price: string) => {
   return price
 }
 
-const PriceInput = ({ defaultValue, name, prefix, disable, currency, setValue }: PriceProps) => {
+const PriceInput = ({
+  defaultValue,
+  name,
+  prefix,
+  disable,
+  currency,
+  setValue,
+  error,
+}: PriceProps) => {
   const [defaultPrice, setDefaultPrice] = useState<string>()
 
   useEffect(() => {
@@ -34,8 +42,6 @@ const PriceInput = ({ defaultValue, name, prefix, disable, currency, setValue }:
 
   const onValueChange = (value: string) => {
     const formatValue = formatter(value)
-
-    // const x = Object.values(balance)[)]
 
     if (validationInput(formatValue) || value === '') {
       setValue(formatValue)
@@ -82,8 +88,10 @@ const PriceInput = ({ defaultValue, name, prefix, disable, currency, setValue }:
           onBlur={handleBlur}
           onClick={handleClick}
           onChange={(event) => onValueChange(event.target.value)}
-          className={`shadow appearance-none border rounded py-6 px-16 text-2xl text-gray-700 leading-tight focus:outline-none focus:shadow-outline form-input block w-full sm:leading-5 ${
-            disable ? 'text-green-600' : 'text-red-600'
+          className={`shadow appearance-none border rounded py-6 px-16 text-2xl text-gray-700 leading-tight focus:outline-none form-input block w-full sm:leading-5 ${
+            disable ? 'text-green-600' : 'text-black-800'
+          } ${
+            error ? 'text-red-500 focus:border-red-500 border-red-300' : 'focus:border-blue-400'
           }`}
           placeholder="0.00"
           aria-describedby="price-currency"
