@@ -84,6 +84,7 @@ const PriceInput = ({
           type="text"
           id={`price-input-${name}`}
           aria-label={`price-input-${name}`}
+          data-cy={`price-input-${name}`}
           value={defaultPrice || ''}
           onBlur={handleBlur}
           onClick={handleClick}

@@ -3,13 +3,14 @@ import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
 import BalanceView from '../components/stats/BalanceView'
 import useBalance from '../hooks/useBalance'
+import SwapIcon from '../components/utilities/SwapIcon'
 import PriceInput from '../components/inputs/PriceInput'
-import ConvertIcon from '../components/utilities/ConvertIcon'
-import { getCurrencies } from '../services/openexchangerates'
-import { convertToFloat, convertToString } from '../services/convertPrice'
 import ConvertView from '../components/stats/ConvertView'
 import Tabs from '../components/tabs/Tabs'
 import ConvertButton from '../components/buttons/ConvertButton'
+
+import { getCurrencies } from '../services/openexchangerates'
+import { convertToFloat, convertToString } from '../services/convertPrice'
 
 const Dashboard = () => {
   const { balance, setBalance } = useBalance()
@@ -34,30 +35,28 @@ const Dashboard = () => {
     name: 'Euro',
   })
 
-  // useEffect(() => {
-  //   if (firstCallAPI) {
-  //     return
-  //   }
-  //   openexchangeratesAPI
-  //     .getCurrencies()
-  //     .then((res) => {
-  //       setConvertRate(res)
-  //       setFirstCallAPI(true)
-  //     })
-  //     .catch((err) => console.error(err))
-  // }, [firstCallAPI])
+  useEffect(() => {
+    if (firstCallAPI) {
+      return
+    }
+    getCurrencies()
+      .then((res) => {
+        setConvertRate(res)
+        setFirstCallAPI(true)
+      })
+      .catch((err) => console.error(err))
+  }, [firstCallAPI])
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     openexchangeratesAPI
-  //       .getCurrencies()
-  //       .then((res) => {
-  //         setConvertRate(res)
-  //       })
-  //       .catch((err) => console.error(err))
-  //   }, 1000 * 10)
-  //   return () => clearInterval(interval)
-  // }, [])
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getCurrencies()
+        .then((res) => {
+          setConvertRate(res)
+        })
+        .catch((err) => console.error(err))
+    }, 1000 * 10)
+    return () => clearInterval(interval)
+  }, [])
 
   const [hasDifferentiationError, setHasDifferentiationError] = useState(false)
   useEffect(() => {
@@ -67,17 +66,13 @@ const Dashboard = () => {
       setOutputPrice('')
       return
     }
-
     const inputBalance = Object.values(balance)[
       Object.keys(balance).findIndex((c) => c === inputLabel.slug)
     ]
-
     const inputDifferentiation = convertToFloat(inputBalance) - convertToFloat(inputPrice)
-
     if (inputDifferentiation < 0) {
       setHasDifferentiationError(true)
     }
-
     const inputRate = Object.values(convertRate)[
       Object.keys(convertRate).findIndex((c) => c === inputLabel.slug)
     ]
@@ -88,7 +83,7 @@ const Dashboard = () => {
     price = (price * outputRate) / inputRate
     price = Math.round((price + Number.EPSILON) * 100) / 100
     setOutputPrice(convertToString(price))
-  }, [inputPrice, convertRate, inputLabel, outputLabel])
+  }, [inputPrice, convertRate, inputLabel, outputLabel, balance])
 
   const handleSubmit = () => {
     if (isNaN(convertToFloat(inputPrice))) {
@@ -131,6 +126,7 @@ const Dashboard = () => {
     setOutputLabel(inputLabel)
     setInputLabel(tempLabel)
   }
+
   return (
     <>
       <Header />
@@ -150,7 +146,7 @@ const Dashboard = () => {
             />
           </div>
           <div className="w-full lg:w-1/4 mt-0 lg:mt-24">
-            <ConvertIcon changeOrdinate={handleChangeConvert} />
+            <SwapIcon changeOrdinate={handleChangeConvert} />
           </div>
           <div className="w-full lg:w-3/8">
             <Tabs active={outputLabel} inputActive={inputLabel} setAction={setOutputLabel} />
