@@ -7,6 +7,7 @@ import PriceInput from '../components/inputs/PriceInput'
 import ConvertIcon from '../components/utilities/ConvertIcon'
 import { openexchangerates as openexchangeratesAPI } from '../services'
 import ConvertView from '../components/stats/ConvertView'
+import Tabs from '../components/tabs/Tabs'
 
 const Dashboard = () => {
   const { balance, setBalance } = useBalance()
@@ -25,6 +26,16 @@ const Dashboard = () => {
     GBP: 0.8,
   })
   const [firstCallAPI, setFirstCallAPI] = useState(false)
+  const [inputLabel, setInputLabel] = useState({
+    slug: 'USD',
+    sign: '$',
+    name: 'US Dollar',
+  })
+  const [outputLabel, setOutputLabel] = useState({
+    slug: 'EUR',
+    sign: '€',
+    name: 'Euro',
+  })
 
   // useEffect(() => {
   //   if (firstCallAPI) {
@@ -57,6 +68,7 @@ const Dashboard = () => {
       return
     }
     price *= convertRate.EUR
+    price = Math.round((price + Number.EPSILON) * 100) / 100
     let convertedPrice = price.toString()
     convertedPrice = convertedPrice.replace('.', ',')
     convertedPrice = convertedPrice.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
@@ -73,25 +85,25 @@ const Dashboard = () => {
         <ConvertView convert={convertRate} />
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/8">
+            <Tabs active={inputLabel} setAction={setInputLabel} setInputActive={setOutputLabel} />
             <PriceInput
               name="input_price"
-              label="price"
               prefix="-"
-              currency={{ sign: '$', text: 'USD' }}
+              currency={inputLabel}
               setValue={setInputPrice}
               defaultValue={inputPrice}
             />
           </div>
-          <div className="w-full lg:w-1/4">
+          <div className="w-full lg:w-1/4 mt-0 lg:mt-24">
             <ConvertIcon />
           </div>
           <div className="w-full lg:w-3/8">
+            <Tabs active={outputLabel} inputActive={inputLabel} setAction={setOutputLabel} />
             <PriceInput
               name="output_price"
-              label="price"
               prefix="+"
               disable={true}
-              currency={{ sign: '€', text: 'EUR' }}
+              currency={outputLabel}
               setValue={setOutputPrice}
               defaultValue={outputPrice}
             />

@@ -1,0 +1,17 @@
+[
+  {
+    "slug": "USD",
+    "sign": "$",
+    "name": "US Dollar"
+  },
+  {
+    "slug": "EUR",
+    "sign": "€",
+    "name": "Euro"
+  },
+  {
+    "slug": "GPD",
+    "sign": "£",
+    "name": "Pound Sterling"
+  }
+]

@@ -3,7 +3,7 @@ import React from 'react'
 const ConvertIcon = () => {
   return (
     <div className="flex flex-wrap items-center justify-center mt-12 cursor-pointer ">
-      <div className="w-12 rotate-90 transform sm:rotate-0">
+      <div className="w-12 rotate-90 transform lg:rotate-0">
         <svg
           version="1.1"
           id="Capa_1"

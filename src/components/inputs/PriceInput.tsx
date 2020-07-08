@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 type PriceProps = {
   defaultValue?: string
   name: string
-  label: string
   currency: any
   prefix: string
   disable?: boolean
@@ -25,15 +24,7 @@ const formatter = (price: string) => {
   return price
 }
 
-const PriceInput = ({
-  defaultValue,
-  label,
-  name,
-  prefix,
-  disable,
-  currency,
-  setValue,
-}: PriceProps) => {
+const PriceInput = ({ defaultValue, name, prefix, disable, currency, setValue }: PriceProps) => {
   const [defaultPrice, setDefaultPrice] = useState<string>()
   useEffect(() => {
     setDefaultPrice(formatter(defaultValue || ''))
@@ -69,7 +60,7 @@ const PriceInput = ({
         htmlFor={`price-input-${name}`}
         className="block text-3xl mb-4 font-medium leading-5 text-gray-700"
       >
-        {label}
+        {currency.name}
       </label>
       <div className="mt-1 text-2xl relative rounded-md shadow-sm">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -93,7 +84,7 @@ const PriceInput = ({
         />
         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
           <span className="text-gray-500 text-2xl sm:leading-5" id="price-currency">
-            {currency.text}
+            {currency.slug}
           </span>
         </div>
       </div>
