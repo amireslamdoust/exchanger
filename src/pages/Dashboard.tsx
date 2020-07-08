@@ -35,28 +35,28 @@ const Dashboard = () => {
     name: 'Euro',
   })
 
-  // useEffect(() => {
-  //   if (firstCallAPI) {
-  //     return
-  //   }
-  //   getCurrencies()
-  //     .then((res) => {
-  //       setConvertRate(res)
-  //       setFirstCallAPI(true)
-  //     })
-  //     .catch((err) => console.error(err))
-  // }, [firstCallAPI])
-  //
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     getCurrencies()
-  //       .then((res) => {
-  //         setConvertRate(res)
-  //       })
-  //       .catch((err) => console.error(err))
-  //   }, 1000 * 10)
-  //   return () => clearInterval(interval)
-  // }, [])
+  useEffect(() => {
+    if (firstCallAPI) {
+      return
+    }
+    getCurrencies()
+      .then((res) => {
+        setConvertRate(res)
+        setFirstCallAPI(true)
+      })
+      .catch((err) => console.error(err))
+  }, [firstCallAPI])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getCurrencies()
+        .then((res) => {
+          setConvertRate(res)
+        })
+        .catch((err) => console.error(err))
+    }, 1000 * 10)
+    return () => clearInterval(interval)
+  }, [])
 
   const [hasDifferentiationError, setHasDifferentiationError] = useState(false)
   useEffect(() => {
