@@ -25,3 +25,7 @@ yarn.lock*
 
 *.log
 /src/styles/main.css
+
+# videos
+/cypress/videos
+/cypress/screenshots

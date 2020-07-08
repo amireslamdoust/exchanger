@@ -1,12 +1,14 @@
-import React from 'react';
+import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import routes from './routes'
-import Layout from "./components/utilities/Layout";
+import Layout from './components/layout/Layout'
+import Dashboard from './pages/Dashboard'
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Switch>
+        <Route path="/" exact component={Dashboard} />
         <Layout>
           {routes.map((route) => {
             return (
@@ -21,8 +23,7 @@ function App() {
         </Layout>
       </Switch>
     </Router>
-  );
+  )
 }
 
-
-export default App;
+export default App
