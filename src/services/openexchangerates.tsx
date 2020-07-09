@@ -7,6 +7,4 @@ export const getCurrencies = async () => {
     .catch((err) => console.error(err))
 }
 
-export default {
-  getCurrencies,
-}
+export default { getCurrencies }
