@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getCurrencies } from '../../services/openexchangerates'
 
 type ConvertViewProps = {
@@ -7,8 +7,10 @@ type ConvertViewProps = {
 }
 
 const ConvertView = ({ convertRate, setConvertRate }: ConvertViewProps) => {
+  const [second, setSecond] = useState(0)
   useEffect(() => {
     const interval = setInterval(() => {
+      setSecond(1000 * 10)
       getCurrencies()
         .then((res) => {
           if (!res) {
@@ -20,9 +22,9 @@ const ConvertView = ({ convertRate, setConvertRate }: ConvertViewProps) => {
           setConvertRate(res)
         })
         .catch((err) => console.error(err))
-    }, 1000 * 10)
+    }, second)
     return () => clearInterval(interval)
-  }, [setConvertRate])
+  }, [setConvertRate, second])
 
   return (
     <div className="my-10">
