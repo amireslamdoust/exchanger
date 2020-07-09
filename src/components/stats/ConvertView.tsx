@@ -14,12 +14,15 @@ const ConvertView = ({ convertRate, setConvertRate }: ConvertViewProps) => {
           if (!res) {
             return
           }
+          if (!res.EUR || !res.GBP || !res.USD) {
+            return
+          }
           setConvertRate(res)
         })
         .catch((err) => console.error(err))
-    }, 1000 * 10 * 6)
+    }, 1000 * 10)
     return () => clearInterval(interval)
-  }, [])
+  }, [setConvertRate])
 
   return (
     <div className="my-10">
@@ -36,7 +39,11 @@ const ConvertView = ({ convertRate, setConvertRate }: ConvertViewProps) => {
           </div>
         </div>
         <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
+          <div
+            data-cy-value={convertRate.GBP}
+            data-cy="convertRate.GBP"
+            className="px-4 py-5 sm:p-6"
+          >
             <dl>
               <dt className="text-sm leading-5 font-medium text-gray-500 truncate">
                 Pound Sterling

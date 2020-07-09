@@ -31,4 +31,10 @@ describe('test convert works', () => {
     cy.get('[data-cy="convert-action"]').should('be.disabled')
     cy.get('[data-cy="USD-balance"]').contains('300')
   })
+
+  it('callAPI', () => {
+    cy.visit('/')
+    cy.wait(1000 * 12)
+    cy.get('[data-cy="convertRate.GBP').should('have.attr', 'data-cy-value').and('not.equal', '0')
+  })
 })

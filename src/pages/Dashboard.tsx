@@ -8,8 +8,6 @@ import PriceInput from '../components/inputs/PriceInput'
 import ConvertView from '../components/stats/ConvertView'
 import Tabs from '../components/tabs/Tabs'
 import ConvertButton from '../components/buttons/ConvertButton'
-
-import { getCurrencies } from '../services/openexchangerates'
 import { convertToFloat, convertToString } from '../services/convertPrice'
 
 const Dashboard = () => {
@@ -20,7 +18,7 @@ const Dashboard = () => {
   const [convertRate, setConvertRate] = useState({
     USD: 1,
     EUR: 0.89,
-    GBP: 0.8,
+    GBP: 0,
   })
   const [inputLabel, setInputLabel] = useState({
     slug: 'USD',
