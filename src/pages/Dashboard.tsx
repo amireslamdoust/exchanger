@@ -8,22 +8,18 @@ import PriceInput from '../components/inputs/PriceInput'
 import ConvertView from '../components/stats/ConvertView'
 import Tabs from '../components/tabs/Tabs'
 import ConvertButton from '../components/buttons/ConvertButton'
-
-import { getCurrencies } from '../services/openexchangerates'
 import { convertToFloat, convertToString } from '../services/convertPrice'
 
 const Dashboard = () => {
   const { balance, setBalance } = useBalance()
   const [inputPrice, setInputPrice] = useState('')
   const [outputPrice, setOutputPrice] = useState('')
-
+  const [hasDifferentiationError, setHasDifferentiationError] = useState(false)
   const [convertRate, setConvertRate] = useState({
     USD: 1,
     EUR: 0.89,
-    GBP: 0.8,
+    GBP: 0,
   })
-
-  const [firstCallAPI, setFirstCallAPI] = useState(false)
   const [inputLabel, setInputLabel] = useState({
     slug: 'USD',
     sign: '$',
@@ -35,30 +31,6 @@ const Dashboard = () => {
     name: 'Euro',
   })
 
-  useEffect(() => {
-    if (firstCallAPI) {
-      return
-    }
-    getCurrencies()
-      .then((res) => {
-        setConvertRate(res)
-        setFirstCallAPI(true)
-      })
-      .catch((err) => console.error(err))
-  }, [firstCallAPI])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getCurrencies()
-        .then((res) => {
-          setConvertRate(res)
-        })
-        .catch((err) => console.error(err))
-    }, 1000 * 10)
-    return () => clearInterval(interval)
-  }, [])
-
-  const [hasDifferentiationError, setHasDifferentiationError] = useState(false)
   useEffect(() => {
     setHasDifferentiationError(false)
     let price = convertToFloat(inputPrice)
@@ -132,7 +104,7 @@ const Dashboard = () => {
       <Header />
       <div className="container mx-auto my-5 px-4 ">
         <BalanceView balance={balance} />
-        <ConvertView convert={convertRate} />
+        <ConvertView convertRate={convertRate} setConvertRate={setConvertRate} />
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/8">
             <Tabs active={inputLabel} setAction={setInputLabel} setInputActive={setOutputLabel} />
